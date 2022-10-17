@@ -19,7 +19,3 @@ yarn start
 ## 构建项目
 
 yarn build
-
-## License
-
-This project is licensed under the [Apache-2.0 License](LICENSE).
