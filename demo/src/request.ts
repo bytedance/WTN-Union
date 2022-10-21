@@ -8,7 +8,7 @@ export interface RequestParams {
   StreamID: string;
   SessionID: string;
   sdp: string;
-  ClientIp?: string;
+  ClientIP?: string;
   MuteAudio?: boolean;
   MuteVideo?: boolean;
   parameter?: string;
@@ -35,7 +35,7 @@ export const pushRequest = ({
   token,
   SessionID,
   sdp,
-  ClientIp,
+  ClientIP,
   MuteAudio,
   MuteVideo,
   parameter,
@@ -54,8 +54,8 @@ export const pushRequest = ({
     return item;
   });
   let res = arr.join("");
-  let url = ClientIp
-    ? `https://${Domain}/push/${AppID}/${StreamID}?SessionID=${SessionID}&ClientIP=${ClientIp}&MuteAudio=${MuteAudio}&MuteVideo=${MuteVideo}${res}`
+  let url = ClientIP
+    ? `https://${Domain}/push/${AppID}/${StreamID}?SessionID=${SessionID}&ClientIP=${ClientIP}&MuteAudio=${MuteAudio}&MuteVideo=${MuteVideo}${res}`
     : `https://${Domain}/push/${AppID}/${StreamID}?SessionID=${SessionID}&MuteAudio=${MuteAudio}&MuteVideo=${MuteVideo}${res}`;
   return fetch(url, {
     method: "POST",
@@ -86,7 +86,7 @@ export const pullRequest = ({
   sdp,
   MuteAudio,
   MuteVideo,
-  ClientIp,
+  ClientIP,
   // ip,
   parameter,
 }: PullParameters): Promise<ResponseParams> => {
@@ -116,8 +116,8 @@ export const pullRequest = ({
     return item;
   });
   let res = arr.join("");
-  let url = ClientIp
-    ? `https://${Domain}/push/${AppID}/${StreamID}?SessionID=${SessionID}&ClientIP=${ClientIp}&MuteAudio=${MuteAudio}&MuteVideo=${MuteVideo}${res}`
+  let url = ClientIP
+    ? `https://${Domain}/push/${AppID}/${StreamID}?SessionID=${SessionID}&ClientIP=${ClientIP}&MuteAudio=${MuteAudio}&MuteVideo=${MuteVideo}${res}`
     : `https://${Domain}/pull/${AppID}/${StreamID}?SessionID=${SessionID}&MuteAudio=${MuteAudio}&MuteVideo=${MuteVideo}${res}`;
   return fetch(url, requestInit).then(async (r) => {
     if (r.status !== 201) {
