@@ -163,7 +163,7 @@ export default class App extends React.Component<IProps, IState> {
         return false;
       });
 
-    await this.setState({
+    this.setState({
       parameter:
         window.location.search.slice(1) === ""
           ? ""
@@ -176,7 +176,7 @@ export default class App extends React.Component<IProps, IState> {
   startPush = async () => {
     this.peer?.destroy();
     this.setState({ errorMessage: "" });
-    this.getParameter();
+    await this.getParameter();
     const {
       ClientIP,
       Domain,
@@ -191,7 +191,7 @@ export default class App extends React.Component<IProps, IState> {
     } = this.state;
     // step1: 校验参数
     if (!AppID || !StreamID || !Domain || !SessionID || !AppKey) {
-      await this.setState({ errorMessage: "参数不全" });
+      this.setState({ errorMessage: "参数不全" });
       Message.error("参数不全");
       return;
     }
@@ -266,7 +266,7 @@ export default class App extends React.Component<IProps, IState> {
     // 清空错误信息
     this.clearErrorMessage();
 
-    await this.setState({
+    this.setState({
       parameter:
         window.location.search.slice(1) === ""
           ? ""
