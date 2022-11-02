@@ -18,6 +18,9 @@ export async function generateToken({
   PullAuth,
   AppKey,
 }: TokenParameters) {
+  if (Action === "pull" && !PullAuth) {
+    return "";
+  }
   // return AppID;
   const payload: any = {
     version: "1.0",
