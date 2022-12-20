@@ -25,7 +25,7 @@ import {
 export interface IProps {}
 
 export interface IState {
-  mode: "push" | "pull";
+  mode: "pub" | "sub";
   Domain: string | undefined;
   AppID: string | undefined;
   AppKey: string | undefined;
@@ -35,12 +35,12 @@ export interface IState {
   microphoneList: Array<any>;
   mediaList: Array<any>;
   SessionID: string;
-  pullUrl: string | undefined;
-  pushUrl: string | undefined;
+  subUrl: string | undefined;
+  pubUrl: string | undefined;
   visibility: boolean;
   MuteAudio: boolean;
   MuteVideo: boolean;
-  PullAuth: boolean;
+  SubAuth: boolean;
   ClientIP: string;
   iceState: string;
   dtlsAudioState: string;
@@ -72,7 +72,7 @@ export default class App extends React.Component<IProps, IState> {
     // @ts-ignore
     window.app = this;
     this.state = {
-      mode: "push",
+      mode: "pub",
       Domain: "",
       AppID: "",
       AppKey: "",
@@ -82,12 +82,12 @@ export default class App extends React.Component<IProps, IState> {
       mediaList: [],
       StreamID: "",
       SessionID: "",
-      pullUrl: undefined,
-      pushUrl: undefined,
+      subUrl: undefined,
+      pubUrl: undefined,
       visibility: false,
       MuteAudio: false,
       MuteVideo: false,
-      PullAuth: true,
+      SubAuth: true,
       ClientIP: "",
       iceState: "",
       dtlsAudioState: "",
@@ -104,10 +104,10 @@ export default class App extends React.Component<IProps, IState> {
 
   componentDidMount() {
     const queryObject: any = getUrlPrmt();
-    if (queryObject.PullAuth === "true") {
-      queryObject.PullAuth = true;
-    } else if (queryObject.PullAuth === "false") {
-      queryObject.PullAuth = false;
+    if (queryObject.SubAuth === "true") {
+      queryObject.SubAuth = true;
+    } else if (queryObject.SubAuth === "false") {
+      queryObject.SubAuth = false;
     }
     if (queryObject.MuteAudio === "true") {
       queryObject.MuteAudio = true;
@@ -123,7 +123,7 @@ export default class App extends React.Component<IProps, IState> {
     this.setState({ StreamID: uuid() });
     this.setState({ SessionID: uuid() });
     this.setState({ ...queryObject });
-    this.setState({ pushUrl: window.location.origin });
+    this.setState({ pubUrl: window.location.origin });
     this.getDeviceList();
   }
 
@@ -182,7 +182,7 @@ export default class App extends React.Component<IProps, IState> {
       Domain,
       AppID,
       AppKey,
-      PullAuth,
+      SubAuth,
       StreamID,
       SessionID,
       MuteAudio,
@@ -207,8 +207,8 @@ export default class App extends React.Component<IProps, IState> {
       const token = await generateToken({
         AppID,
         StreamID,
-        Action: "push",
-        PullAuth,
+        Action: "pub",
+        SubAuth,
         AppKey,
       });
       this.getPushPeerInfo(peer);
@@ -230,8 +230,8 @@ export default class App extends React.Component<IProps, IState> {
       this.setState(
         {
           visibility: true,
-          pullUrl: `${window.location.origin}${window.location.pathname}?mode=pull&Domain=${Domain}&AppID=${AppID}&AppKey=${AppKey}&StreamID=${StreamID}&ClientIP=${ClientIP}&PullAuth=${PullAuth}&${parameter}`,
-          pushUrl: `${window.location.origin}${window.location.pathname}?Domain=${Domain}&AppID=${AppID}&AppKey=${AppKey}&StreamID=${StreamID}&${parameter}`,
+          subUrl: `${window.location.origin}${window.location.pathname}?mode=sub&Domain=${Domain}&AppID=${AppID}&AppKey=${AppKey}&StreamID=${StreamID}&ClientIP=${ClientIP}&SubAuth=${SubAuth}&${parameter}`,
+          pubUrl: `${window.location.origin}${window.location.pathname}?Domain=${Domain}&AppID=${AppID}&AppKey=${AppKey}&StreamID=${StreamID}&${parameter}`,
         },
         () => {
           peer.playVideo(this.videoRenderDom!);
@@ -240,7 +240,7 @@ export default class App extends React.Component<IProps, IState> {
     } catch (e: any) {
       this.setState({ errorMessage: e.message });
       Message.error(e.message);
-      this.setState({ visibility: false, pullUrl: "" }, () => {
+      this.setState({ visibility: false, subUrl: "" }, () => {
         this.peer?.stopTrack();
         this.videoRenderDom && (this.videoRenderDom.innerHTML = "");
       });
@@ -254,7 +254,7 @@ export default class App extends React.Component<IProps, IState> {
       Domain,
       AppID,
       AppKey,
-      PullAuth,
+      SubAuth,
       StreamID,
       SessionID,
       MuteAudio,
@@ -288,8 +288,8 @@ export default class App extends React.Component<IProps, IState> {
       const token = await generateToken({
         AppID,
         StreamID,
-        Action: "pull",
-        PullAuth,
+        Action: "sub",
+        SubAuth,
         AppKey,
       });
 
@@ -300,7 +300,7 @@ export default class App extends React.Component<IProps, IState> {
         StreamID: StreamID!,
         SessionID: this.state.SessionID!,
         sdp: offerSdp!,
-        token: PullAuth ? token : undefined,
+        token: SubAuth ? token : undefined,
         ClientIP,
         MuteAudio,
         MuteVideo,
@@ -414,7 +414,7 @@ export default class App extends React.Component<IProps, IState> {
     const unlock = await this._pubLock.lock();
     !iceFail && (await deleteRequest(this.location!));
     unlock();
-    this.setState({ visibility: false, pullUrl: "" }, () => {
+    this.setState({ visibility: false, subUrl: "" }, () => {
       // this.peer?.destroy();
       this.peer?.stopTrack();
       this.peer?.clearInterval();
@@ -443,12 +443,12 @@ export default class App extends React.Component<IProps, IState> {
       AppID,
       AppKey,
       mode,
-      PullAuth,
+      SubAuth,
       StreamID,
       SessionID,
       visibility,
-      pullUrl,
-      pushUrl,
+      subUrl,
+      pubUrl,
       MuteAudio,
       MuteVideo,
       ClientIP,
@@ -546,11 +546,11 @@ export default class App extends React.Component<IProps, IState> {
               </div>
               <div>
                 <Space>
-                  PullAuth：
+                  SubAuth：
                   <Switch
-                    id="pullAuthentication"
-                    checked={PullAuth}
-                    onChange={(v) => this.setState({ PullAuth: v })}
+                    id="subAuthentication"
+                    checked={SubAuth}
+                    onChange={(v) => this.setState({ SubAuth: v })}
                   />
                   <span>|</span>
                   ClientIP:
@@ -564,7 +564,7 @@ export default class App extends React.Component<IProps, IState> {
                   />
                 </Space>
               </div>
-              {mode === "push" ? (
+              {mode === "pub" ? (
                 <Space direction="vertical">
                   <Space>
                     <Select
@@ -610,44 +610,44 @@ export default class App extends React.Component<IProps, IState> {
                   </Space>
                   <Space>
                     <Button
-                      id="StartPush"
+                      id="StartPub"
                       disabled={visibility}
                       type="primary"
                       onClick={() => {
                         this.startPush();
                       }}
                     >
-                      StartPush
+                      StartPub
                     </Button>
                     <Button
-                      id="StopPush"
+                      id="StopPub"
                       disabled={!visibility}
                       status="danger"
                       onClick={() => {
                         this.stop();
                       }}
                     >
-                      StopPush
+                      StopPub
                     </Button>
-                    {mode === "push" ? (
+                    {mode === "pub" ? (
                       <Space>
                         <Button
-                          id="PullLink"
+                          id="SubLink"
                           disabled={!visibility}
                           onClick={() => {
-                            window.open(pullUrl);
+                            window.open(subUrl);
                           }}
                         >
-                          PullLink
+                          SubLink
                         </Button>
                         <Button
-                          id="CurrentPushLink"
+                          id="CurrentPubLink"
                           disabled={!visibility}
                           onClick={() => {
-                            window.open(pushUrl);
+                            window.open(pubUrl);
                           }}
                         >
-                          CurrentPushLink
+                          CurrentPubLink
                         </Button>
                       </Space>
                     ) : (
@@ -658,24 +658,24 @@ export default class App extends React.Component<IProps, IState> {
               ) : (
                 <Space>
                   <Button
-                    id="StratPull"
+                    id="StratSub"
                     disabled={visibility}
                     type="primary"
                     onClick={() => {
                       this.startPull();
                     }}
                   >
-                    Start Pull
+                    Start Sub
                   </Button>
                   <Button
-                    id="StopPull"
+                    id="StopSub"
                     disabled={!visibility}
                     status="danger"
                     onClick={() => {
                       this.stop();
                     }}
                   >
-                    Stop Pull
+                    Stop Sub
                   </Button>
                 </Space>
               )}

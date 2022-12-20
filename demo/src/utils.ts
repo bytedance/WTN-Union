@@ -6,7 +6,7 @@ export interface TokenParameters {
   AppID: string;
   StreamID: string;
   Action: string;
-  PullAuth?: boolean;
+  SubAuth?: boolean;
   AppKey?: string;
 }
 
@@ -15,10 +15,10 @@ export async function generateToken({
   AppID,
   StreamID,
   Action,
-  PullAuth,
+  SubAuth,
   AppKey,
 }: TokenParameters) {
-  if (Action === "pull" && !PullAuth) {
+  if (Action === "sub" && !SubAuth) {
     return "";
   }
   // return AppID;
@@ -29,8 +29,8 @@ export async function generateToken({
     action: Action,
     exp: Math.floor(Date.now() / 1000) + 3600,
   };
-  if (Action === "push") {
-    payload.enablePullAuth = !!PullAuth;
+  if (Action === "pub") {
+    payload.enableSubAuth = !!SubAuth;
   }
   const textEncoder = new TextEncoder();
   return await new jose.SignJWT(payload)

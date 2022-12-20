@@ -55,8 +55,8 @@ export const pushRequest = ({
   });
   let res = arr.join("");
   let url = ClientIP
-    ? `https://${Domain}/push/${AppID}/${StreamID}?SessionID=${SessionID}&ClientIP=${ClientIP}&MuteAudio=${MuteAudio}&MuteVideo=${MuteVideo}${res}`
-    : `https://${Domain}/push/${AppID}/${StreamID}?SessionID=${SessionID}&MuteAudio=${MuteAudio}&MuteVideo=${MuteVideo}${res}`;
+    ? `https://${Domain}/pub/${AppID}/${StreamID}?SessionID=${SessionID}&ClientIP=${ClientIP}&MuteAudio=${MuteAudio}&MuteVideo=${MuteVideo}${res}`
+    : `https://${Domain}/pub/${AppID}/${StreamID}?SessionID=${SessionID}&MuteAudio=${MuteAudio}&MuteVideo=${MuteVideo}${res}`;
   return fetch(url, {
     method: "POST",
     headers: {
@@ -117,8 +117,8 @@ export const pullRequest = ({
   });
   let res = arr.join("");
   let url = ClientIP
-    ? `https://${Domain}/push/${AppID}/${StreamID}?SessionID=${SessionID}&ClientIP=${ClientIP}&MuteAudio=${MuteAudio}&MuteVideo=${MuteVideo}${res}`
-    : `https://${Domain}/pull/${AppID}/${StreamID}?SessionID=${SessionID}&MuteAudio=${MuteAudio}&MuteVideo=${MuteVideo}${res}`;
+    ? `https://${Domain}/pub/${AppID}/${StreamID}?SessionID=${SessionID}&ClientIP=${ClientIP}&MuteAudio=${MuteAudio}&MuteVideo=${MuteVideo}${res}`
+    : `https://${Domain}/sub/${AppID}/${StreamID}?SessionID=${SessionID}&MuteAudio=${MuteAudio}&MuteVideo=${MuteVideo}${res}`;
   return fetch(url, requestInit).then(async (r) => {
     if (r.status !== 201) {
       let b = r.status;
