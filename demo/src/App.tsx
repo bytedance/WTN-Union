@@ -658,7 +658,7 @@ export default class App extends React.Component<IProps, IState> {
               ) : (
                 <Space>
                   <Button
-                    id="StratSub"
+                    id="StartSub"
                     disabled={visibility}
                     type="primary"
                     onClick={() => {
