@@ -746,7 +746,7 @@ export default class App extends React.Component<IProps, IState> {
                     const { MuteAudio } = this.state;
                     if (this.state.dtlsVideoState === "connected") {
                       const unlock = await this._pubLock.lock();
-                      updateRequest(this.location!, {
+                      await updateRequest(this.location!, {
                         MuteAudio,
                         MuteVideo: v,
                       });
@@ -763,7 +763,7 @@ export default class App extends React.Component<IProps, IState> {
                     const { MuteVideo } = this.state;
                     if (this.state.dtlsVideoState === "connected") {
                       const unlock = await this._pubLock.lock();
-                      updateRequest(this.location!, {
+                      await updateRequest(this.location!, {
                         MuteAudio: v,
                         MuteVideo,
                       });
